@@ -1,10 +1,5 @@
 package com.efit.ganapathi.service;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,13 +21,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.base.basesetup.dto.OrderBookingChargesDTO;
-import com.base.basesetup.dto.OrderBookingDTO;
-import com.base.basesetup.entity.OrderBookingChargesVO;
-import com.base.basesetup.entity.OrderBookingVO;
-import com.base.basesetup.exception.ApplicationException;
-import com.base.basesetup.repo.OrderBookingChargesRepo;
-import com.base.basesetup.repo.OrderBookingRepo;
+import com.efit.ganapathi.dto.OrderBookingChargesDTO;
+import com.efit.ganapathi.dto.OrderBookingDTO;
+import com.efit.ganapathi.entity.OrderBookingChargesVO;
+import com.efit.ganapathi.entity.OrderBookingVO;
+import com.efit.ganapathi.exception.ApplicationException;
+import com.efit.ganapathi.repo.OrderBookingChargesRepo;
+import com.efit.ganapathi.repo.OrderBookingRepo;
 
 @Service
 public class OrderBookingServiceImpl implements OrderBookingService {

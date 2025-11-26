@@ -6,20 +6,28 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.efit.ganapathi.dto.BranchDTO;
+import com.efit.ganapathi.dto.ProductDTO;
 import com.efit.ganapathi.entity.BranchVO;
+import com.efit.ganapathi.entity.ProductVO;
 import com.efit.ganapathi.exception.ApplicationException;
 import com.efit.ganapathi.repo.BranchRepo;
 import com.efit.ganapathi.repo.DepartmentRepo;
 import com.efit.ganapathi.repo.DesignationLeaveRepo;
 import com.efit.ganapathi.repo.DesignationRepo;
+import com.efit.ganapathi.repo.ProductRepo;
 import com.efit.ganapathi.repo.UserLoginRolesRepo;
 import com.efit.ganapathi.repo.UserRepo;
 
@@ -30,10 +38,8 @@ public class MasterServiceImpl implements MasterService {
 	@Autowired
 	BranchRepo branchRepo;
 
-
 	@Autowired
 	DesignationLeaveRepo designationLeaveRepo;
-
 
 	@Autowired
 	UserLoginRolesRepo userLoginRolesRepo;
@@ -41,12 +47,17 @@ public class MasterServiceImpl implements MasterService {
 	@Autowired
 	UserRepo userRepo;
 
-	
 	@Autowired
 	DepartmentRepo departmentRepo;
-	
+
 	@Autowired
 	DesignationRepo designationRepo;
+
+	@Autowired
+	ProductRepo productRepo;
+
+	@Autowired
+	PaginationService paginationService;
 
 	// Branch
 
@@ -150,8 +161,103 @@ public class MasterServiceImpl implements MasterService {
 		branchRepo.deleteById(branchid);
 	}
 
-	// Employee
+	// Product
 
-	
+	@Override
+	public Map<String, Object> getAllProductByOrgId(Long orgId, String search, int page, int size) {
+
+		if (search != null) {
+			search = search.trim();
+			if (search.isEmpty()) {
+				search = null;
+			}
+		}
+
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by("pname").ascending());
+		Page<ProductVO> customerPage = productRepo.getAllProductByOrgId(orgId, search, pageable);
+
+		return paginationService.buildResponse(customerPage);
+
+	}
+
+	@Override
+	public ProductVO getProductById(Long id) {
+
+		return productRepo.getProductById(id);
+	}
+
+	@Override
+	@Transactional
+	public Map<String, Object> updateCreateProduct(@Valid ProductDTO productDTO) throws ApplicationException {
+
+		ProductVO productVO = new ProductVO();
+
+		String message;
+
+		if (ObjectUtils.isNotEmpty(productDTO.getId())) {
+
+			productVO = productRepo.findById(productDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Product Not Found!"));
+			productVO.setUpdatedBy(productDTO.getCreatedBy());
+
+			if (!productVO.getProductName().equalsIgnoreCase(productDTO.getProductName())) {
+				if (productRepo.existsByProductNameAndOrgId(productDTO.getProductName(), productDTO.getOrgId())) {
+					String errorMessage = String.format("This ProductName: %s Already Exists in This Organization",
+							productDTO.getProductName());
+					throw new ApplicationException(errorMessage);
+				}
+				productVO.setProductName(productDTO.getProductName().toUpperCase());
+			}
+
+			if (!productVO.getProductCode().equalsIgnoreCase(productDTO.getProductCode())) {
+				if (productRepo.existsByProductCodeAndOrgId(productDTO.getProductCode(), productDTO.getOrgId())) {
+					String errorMessage = String.format("This ProductCode: %s Already Exists in This Organization",
+							productDTO.getProductName());
+					throw new ApplicationException(errorMessage);
+				}
+				productVO.setProductName(productDTO.getProductName().toUpperCase());
+			}
+
+			message = "Enquiry Updated Successfully";
+		} else {
+
+			if (productRepo.existsByProductNameAndOrgId(productDTO.getProductName(), productDTO.getOrgId())) {
+				String errorMessage = String.format("This ProductName: %s Already Exists in This Organization",
+						productDTO.getProductName());
+				throw new ApplicationException(errorMessage);
+			}
+			if (productRepo.existsByProductCodeAndOrgId(productDTO.getProductCode(), productDTO.getOrgId())) {
+				String errorMessage = String.format("This ProductCode: %s Already Exists in This Organization",
+						productDTO.getProductCode());
+				throw new ApplicationException(errorMessage);
+			}
+
+			productVO.setUpdatedBy(productDTO.getCreatedBy());
+			productVO.setCreatedBy(productDTO.getCreatedBy());
+
+			message = "Enquiry Created Successfully";
+		}
+
+		createProductVOByProductDTO(productDTO, productVO);
+		productRepo.save(productVO);
+		Map<String, Object> response = new HashMap<>();
+		response.put("productVO", productVO);
+		response.put("message", message);
+		return response;
+	}
+
+	private void createProductVOByProductDTO(@Valid ProductDTO productDTO, ProductVO productVO)
+			throws ApplicationException {
+		productVO.setProductName(productDTO.getProductName());
+		productVO.setProductCode(productDTO.getProductCode());
+		productVO.setCategory(productDTO.getCategory());
+		productVO.setSubCategory(productDTO.getSubCategory());
+		productVO.setUom(productDTO.getUom());
+		productVO.setPrice(productDTO.getPrice());
+		productVO.setActive(productDTO.isActive());
+		productVO.setOrgId(productDTO.getOrgId());
+		productVO.setCancel(productDTO.isCancel());
+
+	}
 
 }

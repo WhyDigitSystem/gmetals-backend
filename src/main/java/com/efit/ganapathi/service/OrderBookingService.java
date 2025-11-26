@@ -1,17 +1,14 @@
 package com.efit.ganapathi.service;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
-
-import javax.validation.Valid;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.base.basesetup.dto.OrderBookingDTO;
-import com.base.basesetup.entity.OrderBookingVO;
-import com.base.basesetup.exception.ApplicationException;
+import com.efit.ganapathi.dto.OrderBookingDTO;
+import com.efit.ganapathi.entity.OrderBookingVO;
+import com.efit.ganapathi.exception.ApplicationException;
 
 @Service
 public interface OrderBookingService {
