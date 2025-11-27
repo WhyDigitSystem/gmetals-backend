@@ -52,5 +52,5 @@ public class OrderBookingDTO {
 	private Long orgId;
 	private String createdBy;
 
-	private List<OrderBookingChargesDTO>orderBookingChargesDTO;
+	private List<OrderBookingChargesDTO> orderBookingChargesDTO;
 }

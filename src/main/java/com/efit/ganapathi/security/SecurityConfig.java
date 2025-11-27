@@ -43,7 +43,7 @@ public class SecurityConfig {
 						,"/api/employeemaster/**","/api/sequenceConfig/**","/api/leaveprocess/**","/api/employeedocuments/**","/api/timesheet/**","/api/ticketcontroller/**","/api/managetax/**",
 						"/api/shiftmaster/**","/api/advance/**",
 						"/api/shiftmaster/**","/api/checkinout/**","/api/roles/**","/api/AttendanceLogController/**","/email/**","/api/vendor/**",
-						"/api/Transaction/**","/api/orderbooking/**")
+						"/api/Transaction/**","/api/orderbooking/**","/api/invoice/**")
 
 
 				.permitAll().antMatchers("/api/**").hasAnyRole("USER", "GUEST_USER").anyRequest().authenticated();
