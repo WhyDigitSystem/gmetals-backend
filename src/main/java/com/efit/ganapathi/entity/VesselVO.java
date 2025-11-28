@@ -28,7 +28,7 @@ public class VesselVO {
 	@Column(name = "vesselid")
 	private Long id;
 
-	@Column(name = "vesselvname")
+	@Column(name = "vesselname")
 	private String vesselName;
 	@Column(name = "vesselcode")
 	private String vesselCode;

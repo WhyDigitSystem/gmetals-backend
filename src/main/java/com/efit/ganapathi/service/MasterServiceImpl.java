@@ -289,7 +289,7 @@ public class MasterServiceImpl implements MasterService {
 			}
 		}
 
-		Pageable pageable = PageRequest.of(page - 1, size, Sort.by("vname").ascending());
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by("vesselname").ascending());
 		Page<VesselVO> customerPage = vesselRepo.getAllVesselByOrgId(orgId, search, pageable);
 
 		return paginationService.buildResponse(customerPage);
