@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.efit.ganapathi.common.CommonConstant;
 import com.efit.ganapathi.common.UserConstants;
 import com.efit.ganapathi.dto.BranchDTO;
+import com.efit.ganapathi.dto.PortDTO;
 import com.efit.ganapathi.dto.ProductDTO;
 import com.efit.ganapathi.dto.ResponseDTO;
+import com.efit.ganapathi.dto.VesselDTO;
 import com.efit.ganapathi.entity.BranchVO;
+import com.efit.ganapathi.entity.PortVO;
 import com.efit.ganapathi.entity.ProductVO;
+import com.efit.ganapathi.entity.VesselVO;
 import com.efit.ganapathi.service.MasterService;
 
 @CrossOrigin
@@ -111,7 +117,7 @@ public class MasterController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
-	// Enquiry
+	// Product
 
 	@PutMapping("/updateCreateProduct")
 	public ResponseEntity<ResponseDTO> updateCreateProduct(@RequestBody ProductDTO productDTO) {
@@ -178,6 +184,152 @@ public class MasterController extends BaseController {
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, "Product information receive failedByOrgId",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	// Vessel
+
+	@PutMapping("/updateCreateVessel")
+	public ResponseEntity<ResponseDTO> updateCreateVessel(@Valid @RequestBody VesselDTO vesselDTO) {
+		String methodName = "updateCreateVessel()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			Map<String, Object> vesselVO = masterService.updateCreateVessel(vesselDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, vesselVO.get("message"));
+			responseObjectsMap.put("vesselVO", vesselVO.get("vesselVO"));
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/getAllVesselByOrgId")
+	public ResponseEntity<ResponseDTO> getAllVesselByOrgId(@RequestParam Long orgId,
+			@RequestParam(defaultValue = "") String search, @RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		String methodName = "getAllProductByOrgId()";
+		LOGGER.debug("Starting {}", methodName);
+
+		Map<String, Object> responseMap = new HashMap<>();
+		ResponseDTO responseDTO;
+
+		try {
+			Map<String, Object> vesselVO = masterService.getAllVesselByOrgId(orgId, search, page, size);
+			responseMap.put("message", "Vessel retrieved successfully");
+			responseMap.put("vesselVO", vesselVO);
+			responseDTO = createServiceResponse(responseMap);
+		} catch (Exception e) {
+			LOGGER.error("Error in {}: {}", methodName, e.getMessage());
+			responseDTO = createServiceResponseError(responseMap, "Error fetching users", e.getMessage());
+		}
+
+		LOGGER.debug("Ending {}", methodName);
+		return ResponseEntity.ok(responseDTO);
+	}
+
+	@GetMapping("/getVesselById")
+	public ResponseEntity<ResponseDTO> getVesselById(@RequestParam Long id) {
+		String methodName = "getVesselById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		VesselVO vesselVO = new VesselVO();
+		try {
+			vesselVO = masterService.getVesselById(id);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Vessel get successfully By id");
+			responseObjectsMap.put("vesselVO", vesselVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Vessel information receive failedByOrgId",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	// Product
+
+	@PutMapping("/updateCreatePort")
+	public ResponseEntity<ResponseDTO> updateCreatePort(@Valid @RequestBody PortDTO portDTO) {
+		String methodName = "updateCreatePort()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			Map<String, Object> portVO = masterService.updateCreatePort(portDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, portVO.get("message"));
+			responseObjectsMap.put("portVO", portVO.get("portVO"));
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/getAllPortByOrgId")
+	public ResponseEntity<ResponseDTO> getAllPortByOrgId(@RequestParam Long orgId,
+			@RequestParam(defaultValue = "") String search, @RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		String methodName = "getAllProductByOrgId()";
+		LOGGER.debug("Starting {}", methodName);
+
+		Map<String, Object> responseMap = new HashMap<>();
+		ResponseDTO responseDTO;
+
+		try {
+			Map<String, Object> portVO = masterService.getAllPortByOrgId(orgId, search, page, size);
+			responseMap.put("message", "Port retrieved successfully");
+			responseMap.put("portVO", portVO);
+			responseDTO = createServiceResponse(responseMap);
+		} catch (Exception e) {
+			LOGGER.error("Error in {}: {}", methodName, e.getMessage());
+			responseDTO = createServiceResponseError(responseMap, "Error fetching users", e.getMessage());
+		}
+
+		LOGGER.debug("Ending {}", methodName);
+		return ResponseEntity.ok(responseDTO);
+	}
+
+	@GetMapping("/getPortById")
+	public ResponseEntity<ResponseDTO> getPortById(@RequestParam Long id) {
+		String methodName = "getPortById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		PortVO portVO = new PortVO();
+		try {
+			portVO = masterService.getPortById(id);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Port get successfully By id");
+			responseObjectsMap.put("portVO", portVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Port information receive failedByOrgId",
 					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);

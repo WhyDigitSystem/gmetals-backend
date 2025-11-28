@@ -34,4 +34,5 @@ public interface ProductRepo extends JpaRepository<ProductVO, Long> {
 
 	boolean existsByProductCodeAndOrgId(String productCode, Long orgId);
 
+
 }
