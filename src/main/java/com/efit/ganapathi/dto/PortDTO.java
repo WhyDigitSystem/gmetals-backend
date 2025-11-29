@@ -22,9 +22,7 @@ public class PortDTO {
 	private String portCode;
 
 	@NotNull(message = "countryId is required")
-	@Min(value = 1000000001L, message = "countryId must be minimum 1000000001")
-	@Max(value = 1999999999L, message = "countryId must be 10 digits starting with 1")
-	private Long country;
+	private Long countryName;
 
 	private boolean active;
 

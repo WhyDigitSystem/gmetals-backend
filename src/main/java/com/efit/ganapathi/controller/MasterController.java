@@ -120,7 +120,7 @@ public class MasterController extends BaseController {
 	// Product
 
 	@PutMapping("/updateCreateProduct")
-	public ResponseEntity<ResponseDTO> updateCreateProduct(@RequestBody ProductDTO productDTO) {
+	public ResponseEntity<ResponseDTO> updateCreateProduct(@Valid @RequestBody ProductDTO productDTO) {
 		String methodName = "updateCreateProduct()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;

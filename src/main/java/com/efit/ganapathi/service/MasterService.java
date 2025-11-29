@@ -53,5 +53,11 @@ public interface MasterService {
 	PortVO getPortById(Long id);
 
 	Map<String, Object> updateCreatePort(@Valid PortDTO portDTO) throws ApplicationException;
+	
+//	//Commodity
+//	
+//	Map<String, Object> getAllCommodityByOrgId(Long orgId, String search, int page, int size);
+//
+//	CommodityVO getCommodityById(Long id);
 
 }

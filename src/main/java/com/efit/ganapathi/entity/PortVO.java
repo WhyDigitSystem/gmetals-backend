@@ -50,7 +50,7 @@ public class PortVO {
 	
 	@ManyToOne
 	@JoinColumn(name="countryid")
-	private CountryVO country;
+	private CountryVO countryName;
 
 	@JsonGetter("active")
 	public String getActive() {

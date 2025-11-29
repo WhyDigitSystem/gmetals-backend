@@ -75,7 +75,7 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	CountryRepo countryRepo;
-
+	
 	// Branch
 
 	@Override
@@ -478,11 +478,11 @@ public class MasterServiceImpl implements MasterService {
 		portVO.setPortName(portDTO.getPortName());
 		portVO.setPortCode(portDTO.getPortCode());
 
-		if (portDTO.getCountry() != null) {
-			CountryVO country = countryRepo.findById(portDTO.getCountry())
+		if (portDTO.getCountryName() != null) {
+			CountryVO country = countryRepo.findById(portDTO.getCountryName())
 					.orElseThrow(() -> new ApplicationException("Invalid Country Id!"));
 
-			portVO.setCountry(country);
+			portVO.setCountryName(country);
 		}
 
 		portVO.setActive(portDTO.isActive());
@@ -490,4 +490,6 @@ public class MasterServiceImpl implements MasterService {
 		portVO.setCancel(portDTO.isCancel());
 
 	}
+	
+
 }
