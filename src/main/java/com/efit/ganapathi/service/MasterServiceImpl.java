@@ -482,7 +482,7 @@ public class MasterServiceImpl implements MasterService {
 			CountryVO country = countryRepo.findById(portDTO.getCountryName())
 					.orElseThrow(() -> new ApplicationException("Invalid Country Id!"));
 
-			portVO.setCountryName(country);
+			portVO.setCountry(country);
 		}
 
 		portVO.setActive(portDTO.isActive());
