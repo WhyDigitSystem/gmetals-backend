@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.base.basesetup.entity.OrderBookingVO;
+import com.efit.ganapathi.entity.OrderBookingVO;
 
 @Repository
 public interface OrderBookingRepo extends JpaRepository<OrderBookingVO, Long> {

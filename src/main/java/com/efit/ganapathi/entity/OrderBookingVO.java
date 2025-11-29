@@ -16,7 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.base.basesetup.dto.CreatedUpdatedDate;
+import com.efit.ganapathi.dto.CreatedUpdatedDate;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 

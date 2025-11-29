@@ -12,19 +12,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.base.basesetup.common.CommonConstant;
-import com.base.basesetup.common.UserConstants;
-import com.base.basesetup.dto.OrderBookingDTO;
-import com.base.basesetup.dto.ResponseDTO;
-import com.base.basesetup.entity.OrderBookingVO;
-import com.base.basesetup.service.OrderBookingService;
+import com.efit.ganapathi.common.CommonConstant;
+import com.efit.ganapathi.common.UserConstants;
+import com.efit.ganapathi.dto.OrderBookingDTO;
+import com.efit.ganapathi.dto.ResponseDTO;
+import com.efit.ganapathi.entity.OrderBookingVO;
+import com.efit.ganapathi.service.OrderBookingService;
 
 @CrossOrigin
 @RestController

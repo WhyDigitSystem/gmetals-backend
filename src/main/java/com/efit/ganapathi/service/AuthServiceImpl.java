@@ -49,6 +49,7 @@ import com.efit.ganapathi.entity.UserVO;
 import com.efit.ganapathi.exception.ApplicationException;
 import com.efit.ganapathi.repo.CompanyRepo;
 import com.efit.ganapathi.repo.EmailOtpRepo;
+import com.efit.ganapathi.repo.ExporterRepo;
 import com.efit.ganapathi.repo.ResponsibilitiesRepo;
 import com.efit.ganapathi.repo.RolesRepo;
 import com.efit.ganapathi.repo.RolesResponsibilityRepo;
@@ -60,6 +61,8 @@ import com.efit.ganapathi.repo.UserLoginRolesRepo;
 import com.efit.ganapathi.repo.UserRepo;
 import com.efit.ganapathi.security.TokenProvider;
 import com.efit.ganapathi.util.CryptoUtils;
+
+
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -111,6 +114,12 @@ public class AuthServiceImpl implements AuthService {
 	
 	@Autowired
 	EmailOtpRepo emailOtpRepo;
+	
+	@Autowired
+	ExporterRepo exporterRepo;
+	
+	@Autowired
+	PaginationService paginationService;
 	
 	
 
