@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.efit.ganapathi.entity.OrderBookingChargesVO;
 import com.efit.ganapathi.entity.OrderBookingVO;
 
+
 @Repository
 public interface OrderBookingChargesRepo extends JpaRepository<OrderBookingChargesVO, Long> {
 

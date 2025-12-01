@@ -110,10 +110,9 @@ public class OrderBookingVO {
 	@Lob
 	@Column(name = "attachments")
 	private byte[] attachments;
-	
-	@Column(name="notes")
+
+	@Column(name = "notes")
 	private String notes;
-	
 
 	// summary
 
