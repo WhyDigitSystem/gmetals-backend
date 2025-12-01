@@ -1,7 +1,5 @@
 package com.efit.ganapathi.dto;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -20,9 +18,12 @@ public class PortDTO {
 
 	@NotBlank(message = "PortCode is required")
 	private String portCode;
+	
+	@NotBlank(message = "Status is required")
+	private String status;
 
-	@NotNull(message = "countryId is required")
-	private Long countryName;
+	@NotNull(message = "countryName is required")
+	private String countryName;
 
 	private boolean active;
 

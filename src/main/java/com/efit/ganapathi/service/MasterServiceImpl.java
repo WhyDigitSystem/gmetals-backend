@@ -479,14 +479,14 @@ public class MasterServiceImpl implements MasterService {
 		portVO.setPortCode(portDTO.getPortCode());
 
 		if (portDTO.getCountryName() != null) {
-			CountryVO country = countryRepo.findById(portDTO.getCountryName())
-					.orElseThrow(() -> new ApplicationException("Invalid Country Id!"));
+			CountryVO country = countryRepo.getCountryName(portDTO.getCountryName());
 
 			portVO.setCountry(country);
 		}
 
 		portVO.setActive(portDTO.isActive());
 		portVO.setOrgId(portDTO.getOrgId());
+		portVO.setStatus(portDTO.getStatus());
 		portVO.setCancel(portDTO.isCancel());
 
 	}

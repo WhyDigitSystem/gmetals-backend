@@ -34,8 +34,8 @@ public class PortVO {
 	private String portName;
 	@Column(name = "portcode")
 	private String portCode;
-//	@Column(name = "countryId")
-//	private Long countryId;
+	@Column(name = "status")
+	private String status;
 
 	@Column(name = "active")
 	private boolean active = true;
