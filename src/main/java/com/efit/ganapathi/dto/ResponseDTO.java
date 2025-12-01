@@ -75,6 +75,26 @@ public class ResponseDTO {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void setData(Map<String, Object> savedParty) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setMessage(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setStatus(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setStatus(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 
