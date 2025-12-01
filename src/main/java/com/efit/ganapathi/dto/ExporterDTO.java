@@ -14,7 +14,7 @@ public class ExporterDTO {
 	private Long id;
 
 	private String companyName;
-	
+
 	private String shortName;
 
 	private String contactPerson;
@@ -27,6 +27,8 @@ public class ExporterDTO {
 
 	private String email;
 
+	private String status;
+
 	// common fields
 
 	private String branch;
@@ -34,7 +36,7 @@ public class ExporterDTO {
 	private String branchCode;
 
 	private boolean active;
-	
+
 	private Long orgId;
 
 	private String createdBy;

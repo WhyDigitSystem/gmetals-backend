@@ -64,6 +64,9 @@ public class ExporterVO {
 
 	@Column(name = "createdby")
 	private String createdBy;
+	
+	@Column(name = "status")
+	private String status;
 
 	@Column(name = "modifiedby")
 	private String updatedBy;

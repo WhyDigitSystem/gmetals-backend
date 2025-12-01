@@ -133,6 +133,7 @@ public class ExporterServiceImpl implements ExporterService {
         vo.setAddress(dto.getAddress());
         vo.setPhone(dto.getPhone());
         vo.setEmail(dto.getEmail());
+        vo.setStatus(dto.getStatus());
 
         vo.setBranch(dto.getBranch());
         vo.setBranchCode(dto.getBranchCode());
