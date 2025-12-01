@@ -37,6 +37,6 @@ public interface FormService {
 
 	Form1VO getForm1ById(Long id);
 
-	Map<String, Object> updateCreateForm1(Form1DTO form1dto) throws ApplicationException;
+	Map<String, Object> updateCreateForm1(Form1DTO form1DTO) throws ApplicationException;
 
 }
