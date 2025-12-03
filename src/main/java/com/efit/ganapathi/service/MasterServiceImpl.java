@@ -19,11 +19,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.efit.ganapathi.dto.BranchDTO;
+import com.efit.ganapathi.dto.FreightDTO;
 import com.efit.ganapathi.dto.PortDTO;
 import com.efit.ganapathi.dto.ProductDTO;
 import com.efit.ganapathi.dto.VesselDTO;
 import com.efit.ganapathi.entity.BranchVO;
 import com.efit.ganapathi.entity.CountryVO;
+import com.efit.ganapathi.entity.FreightVO;
 import com.efit.ganapathi.entity.PortVO;
 import com.efit.ganapathi.entity.ProductVO;
 import com.efit.ganapathi.entity.VesselVO;
@@ -33,6 +35,7 @@ import com.efit.ganapathi.repo.CountryRepo;
 import com.efit.ganapathi.repo.DepartmentRepo;
 import com.efit.ganapathi.repo.DesignationLeaveRepo;
 import com.efit.ganapathi.repo.DesignationRepo;
+import com.efit.ganapathi.repo.FreightRepo;
 import com.efit.ganapathi.repo.PortRpo;
 import com.efit.ganapathi.repo.ProductRepo;
 import com.efit.ganapathi.repo.UserLoginRolesRepo;
@@ -75,7 +78,10 @@ public class MasterServiceImpl implements MasterService {
 
 	@Autowired
 	CountryRepo countryRepo;
-	
+
+	@Autowired
+	FreightRepo freightRepo;
+
 	// Branch
 
 	@Override
@@ -232,7 +238,7 @@ public class MasterServiceImpl implements MasterService {
 							productDTO.getProductCode());
 					throw new ApplicationException(errorMessage);
 				}
-				productVO.setProductName(productDTO.getProductCode().toUpperCase());
+				productVO.setProductCode(productDTO.getProductCode().toUpperCase());
 			}
 
 			message = "Product Updated Successfully";
@@ -270,6 +276,7 @@ public class MasterServiceImpl implements MasterService {
 		productVO.setCategory(productDTO.getCategory());
 		productVO.setSubCategory(productDTO.getSubCategory());
 		productVO.setUom(productDTO.getUom());
+		productVO.setStatus(productDTO.getStatus());
 		productVO.setPrice(productDTO.getPrice());
 		productVO.setActive(productDTO.isActive());
 		productVO.setOrgId(productDTO.getOrgId());
@@ -490,6 +497,104 @@ public class MasterServiceImpl implements MasterService {
 		portVO.setCancel(portDTO.isCancel());
 
 	}
-	
+
+	// Freight
+
+	@Override
+	public Map<String, Object> getAllFreightByOrgId(Long orgId, String search, int page, int size) {
+
+		if (search != null) {
+			search = search.trim();
+			if (search.isEmpty()) {
+				search = null;
+			}
+		}
+
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by("freightid").descending());
+		Page<FreightVO> customerPage = freightRepo.getAllFreightByOrgId(orgId, search, pageable);
+
+		return paginationService.buildResponse(customerPage);
+
+	}
+
+	@Override
+	public FreightVO getFreightById(Long id) {
+
+		return freightRepo.getFreightById(id);
+	}
+
+	@Override
+	@Transactional
+	public Map<String, Object> updateCreateFreight(@Valid FreightDTO freightDTO) throws ApplicationException {
+
+		FreightVO freightVO = new FreightVO();
+
+		String message;
+
+		if (ObjectUtils.isNotEmpty(freightDTO.getId())) {
+
+			freightVO = freightRepo.findById(freightDTO.getId())
+					.orElseThrow(() -> new ApplicationException("Freight Not Found!"));
+			freightVO.setUpdatedBy(freightDTO.getCreatedBy());
+
+			if (!freightVO.getFreightName().equalsIgnoreCase(freightDTO.getFreightName())) {
+				if (freightRepo.existsByFreightNameAndOrgId(freightDTO.getFreightName(), freightDTO.getOrgId())) {
+					String errorMessage = String.format("This FreightName: %s Already Exists in This Organization",
+							freightDTO.getFreightName());
+					throw new ApplicationException(errorMessage);
+				}
+				freightVO.setFreightName(freightDTO.getFreightName().toUpperCase());
+			}
+
+			if (!freightVO.getFreightCode().equalsIgnoreCase(freightDTO.getFreightCode())) {
+				if (freightRepo.existsByFreightCodeAndOrgId(freightDTO.getFreightCode(), freightDTO.getOrgId())) {
+					String errorMessage = String.format("This FreightCode: %s Already Exists in This Organization",
+							freightDTO.getFreightCode());
+					throw new ApplicationException(errorMessage);
+				}
+				freightVO.setFreightCode(freightDTO.getFreightCode().toUpperCase());
+			}
+
+			message = "Freight Updated Successfully";
+		} else {
+
+			if (freightRepo.existsByFreightNameAndOrgId(freightDTO.getFreightName(), freightDTO.getOrgId())) {
+				String errorMessage = String.format("This FreightName: %s Already Exists in This Organization",
+						freightDTO.getFreightName());
+				throw new ApplicationException(errorMessage);
+			}
+			if (freightRepo.existsByFreightCodeAndOrgId(freightDTO.getFreightCode(), freightDTO.getOrgId())) {
+				String errorMessage = String.format("This ProductCode: %s Already Exists in This Organization",
+						freightDTO.getFreightCode());
+				throw new ApplicationException(errorMessage);
+			}
+
+			freightVO.setUpdatedBy(freightDTO.getCreatedBy());
+			freightVO.setCreatedBy(freightDTO.getCreatedBy());
+
+			message = "Product Created Successfully";
+		}
+
+		createFreightVOByFreightDTO(freightDTO, freightVO);
+		freightRepo.save(freightVO);
+		Map<String, Object> response = new HashMap<>();
+		response.put("freightVO", freightVO);
+		response.put("message", message);
+		return response;
+	}
+
+	private void createFreightVOByFreightDTO(@Valid FreightDTO freightDTO, FreightVO freightVO)
+			throws ApplicationException {
+		freightVO.setFreightName(freightDTO.getFreightName());
+		freightVO.setFreightCode(freightDTO.getFreightCode());
+		freightVO.setFreightCharges(freightDTO.getFreightCharges());
+		freightVO.setDescription(freightDTO.getDescription());
+		freightVO.setFromLocation(freightDTO.getFromLocation());
+		freightVO.setToLocation(freightDTO.getToLocation());
+		freightVO.setWeight(freightDTO.getWeight());
+		freightVO.setOrgId(freightDTO.getOrgId());
+		freightVO.setCreatedBy(freightDTO.getCreatedBy());
+
+	}
 
 }

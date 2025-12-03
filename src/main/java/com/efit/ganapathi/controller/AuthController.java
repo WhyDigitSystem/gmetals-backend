@@ -104,8 +104,9 @@ public class AuthController extends BaseController {
 		if (StringUtils.isBlank(errorMsg)) {
 			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, UserConstants.USER_LOGIN_SUCCESS_MESSAGE);
 			responseObjectsMap.put(UserConstants.KEY_USER_VO, userResponseDTO);
+			
 			responseDTO = createServiceResponse(responseObjectsMap);
-		} else {
+			} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, UserConstants.USER_LOGIN_FAILED_MESSAGE,
 					errorMsg);
 		}

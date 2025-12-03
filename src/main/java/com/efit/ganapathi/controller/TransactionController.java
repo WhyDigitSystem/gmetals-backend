@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.efit.ganapathi.common.CommonConstant;
 import com.efit.ganapathi.common.UserConstants;
 import com.efit.ganapathi.dto.EnquiryDTO;
+import com.efit.ganapathi.dto.PackingListDTO;
 import com.efit.ganapathi.dto.ResponseDTO;
 import com.efit.ganapathi.entity.EnquiryVO;
+import com.efit.ganapathi.entity.PackingListVO;
 import com.efit.ganapathi.service.TransactionService;
 
 @CrossOrigin
@@ -108,7 +112,7 @@ public class TransactionController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
+
 	@GetMapping("/getCustomerNameAndCode")
 	public ResponseEntity<ResponseDTO> getCustomerNameAndCode(@RequestParam Long orgId) {
 		String methodName = "getCustomerNameAndCode()";
@@ -164,10 +168,10 @@ public class TransactionController extends BaseController {
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
 		return ResponseEntity.ok().body(responseDTO);
 	}
-	
 
 	@GetMapping("/getEnquiryCount")
-	public ResponseEntity<ResponseDTO> getEnquiryCount(@RequestParam Long orgId,@RequestParam String branchCode,@RequestParam String type) {
+	public ResponseEntity<ResponseDTO> getEnquiryCount(@RequestParam Long orgId, @RequestParam String branchCode,
+			@RequestParam String type) {
 		String methodName = "getEnquiryCount()";
 		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
 		String errorMsg = null;
@@ -176,7 +180,7 @@ public class TransactionController extends BaseController {
 		List<Map<String, Object>> mapp = new ArrayList<>();
 
 		try {
-			mapp = transactionService.getEnquiryCount(orgId,branchCode,type);
+			mapp = transactionService.getEnquiryCount(orgId, branchCode, type);
 		} catch (Exception e) {
 			errorMsg = e.getMessage();
 			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
@@ -194,5 +198,77 @@ public class TransactionController extends BaseController {
 		return ResponseEntity.ok().body(responseDTO);
 	}
 
+	// PackingList
+
+	@PutMapping("/updateCreatePackingList")
+	public ResponseEntity<ResponseDTO> updateCreatePackingList(@Valid @RequestBody PackingListDTO packingListDTO) {
+		String methodName = "updateCreatePackingList()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			Map<String, Object> packingListVO = transactionService.updateCreatePackingList(packingListDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, packingListVO.get("message"));
+			responseObjectsMap.put("packingListVO", packingListVO.get("packingListVO"));
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/getAllPackingListByOrgId")
+	public ResponseEntity<ResponseDTO> getAllPackingListByOrgId(@RequestParam Long orgId,
+			@RequestParam(defaultValue = "") String search, @RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		String methodName = "getAllFreightByOrgId()";
+		LOGGER.debug("Starting {}", methodName);
+
+		Map<String, Object> responseMap = new HashMap<>();
+		ResponseDTO responseDTO;
+
+		try {
+			Map<String, Object> packingListVO = transactionService.getAllPackingListByOrgId(orgId, search, page, size);
+			responseMap.put("message", "PackingList retrieved successfully");
+			responseMap.put("packingListVO", packingListVO);
+			responseDTO = createServiceResponse(responseMap);
+		} catch (Exception e) {
+			LOGGER.error("Error in {}: {}", methodName, e.getMessage());
+			responseDTO = createServiceResponseError(responseMap, "Error fetching users", e.getMessage());
+		}
+
+		LOGGER.debug("Ending {}", methodName);
+		return ResponseEntity.ok(responseDTO);
+	}
+
+	@GetMapping("/getPackingListById")
+	public ResponseEntity<ResponseDTO> getPackingListById(@RequestParam Long id) {
+		String methodName = "getPackingListById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		PackingListVO packingListVO = new PackingListVO();
+		try {
+			packingListVO = transactionService.getPackingListById(id);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "PackingList get successfully By id");
+			responseObjectsMap.put("packingListVO", packingListVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap,
+					"PackingList information receive failedByOrgId", errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
 
 }

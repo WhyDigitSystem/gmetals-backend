@@ -32,6 +32,10 @@ public class PartyDTO {
 
     @NotBlank(message = "Phone Number is required")
     private String phone;
+    
+    @NotBlank(message = "Status Number is required")
+    private String status;
+
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid Email Format")

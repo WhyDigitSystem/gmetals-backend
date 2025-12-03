@@ -86,15 +86,15 @@ public class ResponseDTO {
 		
 	}
 
-	public void setStatus(String string) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
-	public void setStatus(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
 	
 	
 

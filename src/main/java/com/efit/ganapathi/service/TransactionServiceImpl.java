@@ -21,9 +21,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.efit.ganapathi.dto.EnquiryDTO;
+import com.efit.ganapathi.dto.PackingListDTO;
+import com.efit.ganapathi.dto.PackingListDetailsDTO;
 import com.efit.ganapathi.entity.EnquiryVO;
+import com.efit.ganapathi.entity.PackingListDetailsVO;
+import com.efit.ganapathi.entity.PackingListVO;
 import com.efit.ganapathi.exception.ApplicationException;
 import com.efit.ganapathi.repo.EnquiryRepo;
+import com.efit.ganapathi.repo.PackingListDetailsRepo;
+import com.efit.ganapathi.repo.PackingListRepo;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -35,6 +41,12 @@ public class TransactionServiceImpl implements TransactionService {
 
 	@Autowired
 	PaginationService paginationService;
+
+	@Autowired
+	PackingListRepo packingListRepo;
+
+	@Autowired
+	PackingListDetailsRepo packingListDetailsRepo;
 
 	// Enquiry
 
@@ -147,8 +159,7 @@ public class TransactionServiceImpl implements TransactionService {
 		enquiryVO.setBranch(enquiryDTO.getBranch());
 
 	}
-	
-	
+
 	@Override
 	public List<Map<String, Object>> getCustomerNameAndCode(Long orgId) {
 		Set<Object[]> currency = enquiryRepo.getCustomerNameAndCode(orgId);
@@ -159,14 +170,14 @@ public class TransactionServiceImpl implements TransactionService {
 		List<Map<String, Object>> List1 = new ArrayList<>();
 		for (Object[] ch : currency) {
 			Map<String, Object> map = new HashMap<>();
-			map.put("partyName", ch[0] != null ? ch[0].toString() : ""); 
+			map.put("partyName", ch[0] != null ? ch[0].toString() : "");
 			map.put("partyCode", ch[1] != null ? ch[1].toString() : "");
 
 			List1.add(map);
 		}
 		return List1;
 	}
-	
+
 	@Override
 	public List<Map<String, Object>> getAssignedAgent(Long orgId) {
 		Set<Object[]> currency = enquiryRepo.getAssignedAgent(orgId);
@@ -177,17 +188,16 @@ public class TransactionServiceImpl implements TransactionService {
 		List<Map<String, Object>> List1 = new ArrayList<>();
 		for (Object[] ch : currency) {
 			Map<String, Object> map = new HashMap<>();
-			map.put("userName", ch[0] != null ? ch[0].toString() : ""); 
+			map.put("userName", ch[0] != null ? ch[0].toString() : "");
 
 			List1.add(map);
 		}
 		return List1;
 	}
-	
-	
+
 	@Override
-	public List<Map<String, Object>> getEnquiryCount(Long orgId, String branchCode,String Type) {
-		Set<Object[]> result = enquiryRepo.getEnquiryCount(orgId,  branchCode, Type);
+	public List<Map<String, Object>> getEnquiryCount(Long orgId, String branchCode, String Type) {
+		Set<Object[]> result = enquiryRepo.getEnquiryCount(orgId, branchCode, Type);
 		return getEnquiryCount(result);
 	}
 
@@ -205,5 +215,118 @@ public class TransactionServiceImpl implements TransactionService {
 
 	}
 
+	// PackingList
+
+	@Override
+	public Map<String, Object> getAllPackingListByOrgId(Long orgId, String search, int page, int size) {
+
+		if (search != null) {
+			search = search.trim();
+			if (search.isEmpty()) {
+				search = null;
+			}
+		}
+
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by("packinglistnumber").ascending());
+		Page<PackingListVO> customerPage = packingListRepo.getAllPackingListByOrgId(orgId, search, pageable);
+
+		return paginationService.buildResponse(customerPage);
+
+	}
+
+	@Override
+	public PackingListVO getPackingListById(Long id) {
+
+		return packingListRepo.getPackingListById(id);
+	}
+
+	@Override
+	@Transactional
+	public Map<String, Object> updateCreatePackingList(PackingListDTO packingListDTO) throws ApplicationException {
+
+		PackingListVO packingListVO = new PackingListVO();
+
+		String message;
+
+		if (ObjectUtils.isNotEmpty(packingListDTO.getId())) {
+
+			packingListVO = packingListRepo.findById(packingListDTO.getId())
+					.orElseThrow(() -> new ApplicationException("PackingList Not Found!"));
+			packingListVO.setUpdatedBy(packingListDTO.getCreatedBy());
+
+			if (!packingListVO.getPackingListNumber().equalsIgnoreCase(packingListDTO.getPackingListNumber())) {
+				if (packingListRepo.existsByPackingListNumberAndOrgId(packingListDTO.getPackingListNumber(),
+						packingListDTO.getOrgId())) {
+					String errorMessage = String.format(
+							"This PackingListNumber: %s Already Exists in This Organization",
+							packingListDTO.getPackingListNumber());
+					throw new ApplicationException(errorMessage);
+				}
+				packingListVO.setPackingListNumber(packingListDTO.getPackingListNumber().toUpperCase());
+			}
+
+			message = "PackingList Updated Successfully";
+		} else {
+
+			if (packingListRepo.existsByPackingListNumberAndOrgId(packingListDTO.getPackingListNumber(),
+					packingListDTO.getOrgId())) {
+				String errorMessage = String.format("This PackingListNumber: %s Already Exists in This Organization",
+						packingListDTO.getPackingListNumber());
+				throw new ApplicationException(errorMessage);
+			}
+
+			packingListVO.setUpdatedBy(packingListDTO.getCreatedBy());
+			packingListVO.setCreatedBy(packingListDTO.getCreatedBy());
+			message = "OrderBooking Created Successfully";
+		}
+
+		createUpdatePackingListVOByPackingListDTO(packingListDTO, packingListVO);
+		packingListRepo.save(packingListVO);
+		Map<String, Object> response = new HashMap<>();
+		response.put("packingListVO", packingListVO);
+		response.put("message", message);
+		return response;
+	}
+
+	private void createUpdatePackingListVOByPackingListDTO(@Valid PackingListDTO packingListDTO,
+			PackingListVO packingListVO) throws ApplicationException {
+		packingListVO.setImporter(packingListDTO.getImporter());
+		packingListVO.setBranchCode(packingListDTO.getBranchCode());
+		packingListVO.setExporter(packingListDTO.getExporter());
+		packingListVO.setPackingListNumber(packingListDTO.getPackingListNumber());
+		packingListVO.setCreatedBy(packingListDTO.getCreatedBy());
+		packingListVO.setPackingDate(packingListDTO.getPackingDate());
+		packingListVO.setPackingType(packingListDTO.getPackingType());
+		packingListVO.setOrgId(packingListDTO.getOrgId());
+
+		if (packingListDTO.getId() != null) {
+			List<PackingListDetailsVO> packingListDetailsVO1 = packingListDetailsRepo
+					.findByPackingListVO(packingListVO);
+			packingListDetailsRepo.deleteAll(packingListDetailsVO1);
+
+		}
+
+		BigDecimal totalWeight = BigDecimal.ZERO;
+		double totalBoxes = 0.0;
+		List<PackingListDetailsVO> packingListDetailsVOs = new ArrayList<>();
+		for (PackingListDetailsDTO packingListDetailsDTO : packingListDTO.getPackingListDetailsDTO()) {
+			PackingListDetailsVO packingListDetailsVO = new PackingListDetailsVO();
+
+			packingListDetailsVO.setItemName(packingListDetailsDTO.getItemName());
+			packingListDetailsVO.setItemCode(packingListDetailsDTO.getItemCode());
+			packingListDetailsVO.setItemDescription(packingListDetailsDTO.getItemDescription());
+			packingListDetailsVO.setWeight(packingListDetailsDTO.getWeight());
+			totalWeight = totalWeight.add(packingListDetailsVO.getWeight());
+			packingListDetailsVO.setBox(packingListDetailsDTO.getBox());
+			totalBoxes = totalBoxes + packingListDetailsVO.getBox();
+			packingListDetailsVO.setPackingListVO(packingListVO);
+			packingListDetailsVOs.add(packingListDetailsVO);
+		}
+
+		packingListVO.setTotalBoxes(totalBoxes);
+		packingListVO.setTotalWeight(totalWeight);
+		packingListVO.setPackingListDetailsVO(packingListDetailsVOs);
+
+	}
 
 }

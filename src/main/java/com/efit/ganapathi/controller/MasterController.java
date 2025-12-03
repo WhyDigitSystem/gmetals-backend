@@ -24,11 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.efit.ganapathi.common.CommonConstant;
 import com.efit.ganapathi.common.UserConstants;
 import com.efit.ganapathi.dto.BranchDTO;
+import com.efit.ganapathi.dto.FreightDTO;
 import com.efit.ganapathi.dto.PortDTO;
 import com.efit.ganapathi.dto.ProductDTO;
 import com.efit.ganapathi.dto.ResponseDTO;
 import com.efit.ganapathi.dto.VesselDTO;
 import com.efit.ganapathi.entity.BranchVO;
+import com.efit.ganapathi.entity.FreightVO;
 import com.efit.ganapathi.entity.PortVO;
 import com.efit.ganapathi.entity.ProductVO;
 import com.efit.ganapathi.entity.VesselVO;
@@ -330,6 +332,79 @@ public class MasterController extends BaseController {
 			responseDTO = createServiceResponse(responseObjectsMap);
 		} else {
 			responseDTO = createServiceResponseError(responseObjectsMap, "Port information receive failedByOrgId",
+					errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	//Freight
+	
+	@PutMapping("/updateCreateFreight")
+	public ResponseEntity<ResponseDTO> updateCreateFreight(@Valid @RequestBody FreightDTO freightDTO) {
+		String methodName = "updateCreateFreight()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		try {
+			Map<String, Object> freightVO = masterService.updateCreateFreight(freightDTO);
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, freightVO.get("message"));
+			responseObjectsMap.put("freightVO", freightVO.get("freightVO"));
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+			responseDTO = createServiceResponseError(responseObjectsMap, errorMsg, errorMsg);
+		}
+		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);
+		return ResponseEntity.ok().body(responseDTO);
+	}
+
+	@GetMapping("/getAllFreightByOrgId")
+	public ResponseEntity<ResponseDTO> getAllFreightByOrgId(@RequestParam Long orgId,
+			@RequestParam(defaultValue = "") String search, @RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		String methodName = "getAllFreightByOrgId()";
+		LOGGER.debug("Starting {}", methodName);
+
+		Map<String, Object> responseMap = new HashMap<>();
+		ResponseDTO responseDTO;
+
+		try {
+			Map<String, Object> freightVO = masterService.getAllFreightByOrgId(orgId, search, page, size);
+			responseMap.put("message", "Freight retrieved successfully");
+			responseMap.put("freightVO", freightVO);
+			responseDTO = createServiceResponse(responseMap);
+		} catch (Exception e) {
+			LOGGER.error("Error in {}: {}", methodName, e.getMessage());
+			responseDTO = createServiceResponseError(responseMap, "Error fetching users", e.getMessage());
+		}
+
+		LOGGER.debug("Ending {}", methodName);
+		return ResponseEntity.ok(responseDTO);
+	}
+
+	@GetMapping("/getFreightById")
+	public ResponseEntity<ResponseDTO> getFreightById(@RequestParam Long id) {
+		String methodName = "getFreightById()";
+		LOGGER.debug(CommonConstant.STARTING_METHOD, methodName);
+		String errorMsg = null;
+		Map<String, Object> responseObjectsMap = new HashMap<>();
+		ResponseDTO responseDTO = null;
+		FreightVO freightVO = new FreightVO();
+		try {
+			freightVO = masterService.getFreightById(id);
+		} catch (Exception e) {
+			errorMsg = e.getMessage();
+			LOGGER.error(UserConstants.ERROR_MSG_METHOD_NAME, methodName, errorMsg);
+		}
+		if (StringUtils.isBlank(errorMsg)) {
+			responseObjectsMap.put(CommonConstant.STRING_MESSAGE, "Freight get successfully By id");
+			responseObjectsMap.put("freightVO", freightVO);
+			responseDTO = createServiceResponse(responseObjectsMap);
+		} else {
+			responseDTO = createServiceResponseError(responseObjectsMap, "Freight information receive failedByOrgId",
 					errorMsg);
 		}
 		LOGGER.debug(CommonConstant.ENDING_METHOD, methodName);

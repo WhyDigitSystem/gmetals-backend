@@ -8,7 +8,9 @@ import javax.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import com.efit.ganapathi.dto.EnquiryDTO;
+import com.efit.ganapathi.dto.PackingListDTO;
 import com.efit.ganapathi.entity.EnquiryVO;
+import com.efit.ganapathi.entity.PackingListVO;
 import com.efit.ganapathi.exception.ApplicationException;
 
 @Service
@@ -27,5 +29,13 @@ public interface TransactionService {
 	List<Map<String, Object>> getAssignedAgent(Long orgId);
 
 	List<Map<String, Object>> getEnquiryCount(Long orgId, String branchCode, String Type);
+	
+	//PackingList
+
+	PackingListVO getPackingListById(Long id);
+
+	Map<String, Object> getAllPackingListByOrgId(Long orgId, String search, int page, int size);
+
+	Map<String, Object> updateCreatePackingList(PackingListDTO packingListDTO) throws ApplicationException;
 
 }

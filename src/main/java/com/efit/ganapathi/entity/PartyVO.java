@@ -16,77 +16,75 @@ import lombok.AllArgsConstructor;
 @Table(name = "party")
 public class PartyVO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "partygen")
-    @SequenceGenerator(
-            name = "partygen",
-            sequenceName = "partyseq",
-            initialValue = 1000000001,
-            allocationSize = 1
-    )
-    @Column(name = "partyid")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "partygen")
+	@SequenceGenerator(name = "partygen", sequenceName = "partyseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "partyid")
+	private Long id;
 
-    @Column(name = "partyname", nullable = false)
-    private String partyName;
+	@Column(name = "partyname", nullable = false)
+	private String partyName;
 
-    @Column(name = "partycode", unique = true)
-    private String partyCode;
+	@Column(name = "partycode", unique = true)
+	private String partyCode;
 
-    @Column(name = "contactperson")
-    private String contactPerson;
+	@Column(name = "contactperson")
+	private String contactPerson;
 
-    @Column(name = "partytype")
-    private String partyType;
+	@Column(name = "partytype")
+	private String partyType;
 
-    @Column(name = "phone")
-    private String phone;
+	@Column(name = "phone")
+	private String phone;
 
-    @Column(name = "email")
-    private String email;
+	@Column(name = "email")
+	private String email;
 
-    @Column(name = "address")
-    private String address;
+	@Column(name = "address")
+	private String address;
 
-    @Column(name = "creditlimit")
-    private BigDecimal creditLimit;
+	@Column(name = "status")
+	private String status;
 
-    // Common fields
-    @Column(name = "branch")
-    private String branch;
+	@Column(name = "creditlimit")
+	private BigDecimal creditLimit;
 
-    @Column(name = "branchcode")
-    private String branchCode;
+	// Common fields
+	@Column(name = "branch")
+	private String branch;
 
-    @Column(name = "active")
-    private boolean active;
+	@Column(name = "branchcode")
+	private String branchCode;
 
-    @Column(name = "createdby")
-    private String createdBy;
+	@Column(name = "active")
+	private boolean active;
 
-    @Column(name = "modifiedby")
-    private String updatedBy;
+	@Column(name = "createdby")
+	private String createdBy;
 
-    @Column(name = "orgid")
-    private Long orgId;
+	@Column(name = "modifiedby")
+	private String updatedBy;
 
-    @Column(name = "cancel")
-    private boolean cancel;
+	@Column(name = "orgid")
+	private Long orgId;
 
-    @Column(name = "screenname")
-    private String screenName = "PARTY";
+	@Column(name = "cancel")
+	private boolean cancel;
 
-    @Column(name = "screencode")
-    private String screenCode = "PS";
+	@Column(name = "screenname")
+	private String screenName = "PARTY";
 
-    // Custom JSON fields
-    @JsonGetter("activeStatus")
-    public String getActiveStatus() {
-        return active ? "Active" : "In-Active";
-    }
+	@Column(name = "screencode")
+	private String screenCode = "PS";
 
-    @JsonGetter("cancelFlag")
-    public String getCancelFlag() {
-        return cancel ? "T" : "F";
-    }
+	// Custom JSON fields
+	@JsonGetter("activeStatus")
+	public String getActiveStatus() {
+		return active ? "Active" : "In-Active";
+	}
+
+	@JsonGetter("cancelFlag")
+	public String getCancelFlag() {
+		return cancel ? "T" : "F";
+	}
 }

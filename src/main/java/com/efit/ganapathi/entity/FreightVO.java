@@ -17,38 +17,38 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "product")
+@Table(name = "freight")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductVO {
+public class FreightVO {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "productgen")
-	@SequenceGenerator(name = "productgen", sequenceName = "productseq", initialValue = 1000000001, allocationSize = 1)
-	@Column(name = "productid")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "freightgen")
+	@SequenceGenerator(name = "freightgen", sequenceName = "freightseq", initialValue = 1000000001, allocationSize = 1)
+	@Column(name = "freightid")
 	private Long id;
 
-	@Column(name = "pname")
-	private String productName;
-	@Column(name = "pcode")
-	private String productCode;	
-	@Column(name = "category")
-	private String category;
+	@Column(name = "freightname")
+	private String freightName;
+	@Column(name = "freightcode")
+	private String freightCode;
+	@Column(name = "description")
+	private String description;
+	@Column(name = "fromlocation")
+	private String fromLocation;
+	@Column(name = "tolocation")
+	private String toLocation;
+	@Column(name = "weight")
+	private double weight;
+
 	@Column(name = "orgid")
 	private Long orgId;
-	@Column(name = "subcategory")
-	private String subCategory;
-	@Column(name = "uom")
-	private String uom;
-	@Column(name = "price")
-	private double price;
-	@Column(name = "status")
-	private String status;
-	
-	
+	@Column(name = "freightcharges")
+	private double freightCharges;
+
 	@Column(name = "cancel")
-	private boolean cancel=false;
+	private boolean cancel = false;
 	@Column(name = "cancelremarks")
 	private String cancelRemarks;
 	@Column(name = "createdby")
@@ -56,7 +56,7 @@ public class ProductVO {
 	@Column(name = "modifiedby")
 	private String updatedBy;
 	@Column(name = "active")
-	private boolean active =true;
+	private boolean active = true;
 
 	@JsonGetter("active")
 	public String getActive() {
@@ -68,7 +68,7 @@ public class ProductVO {
 	public String getCancel() {
 		return cancel ? "T" : "F";
 	}
-	
+
 	@Embedded
 	private CreatedUpdatedDate commonDate = new CreatedUpdatedDate();
 }

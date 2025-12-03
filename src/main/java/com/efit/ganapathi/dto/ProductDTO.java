@@ -36,6 +36,9 @@ public class ProductDTO {
 
 	@NotBlank(message = "CreatedBy is required")
 	private String createdBy;
+	
+	@NotBlank(message = "Status is required")
+	private String status;
 
 	private boolean active;
 	private boolean cancel;
