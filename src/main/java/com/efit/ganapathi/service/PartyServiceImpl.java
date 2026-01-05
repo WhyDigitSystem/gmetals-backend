@@ -82,6 +82,7 @@ public class PartyServiceImpl implements PartyService {
 
         vo.setBranch(dto.getBranch());
         vo.setBranchCode(dto.getBranchCode());
+        vo.setStatus(dto.getStatus());
         vo.setActive(dto.isActive());
         vo.setOrgId(dto.getOrgId());
     }
